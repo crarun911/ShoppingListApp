@@ -3,6 +3,7 @@ package com.dcoders.shoppinglistapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
 
 class CounterAppActivity:ComponentActivity() {
 
@@ -22,7 +24,8 @@ class CounterAppActivity:ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
             setContent {
-                CounterApp()
+                val counterViewmodel:CounterViewmodel by viewModels()
+                CounterApp(counterViewmodel)
             }
     }
 
@@ -30,28 +33,26 @@ class CounterAppActivity:ComponentActivity() {
 }
 
 @Composable
-fun CounterApp(){
+fun CounterApp(counterViewmodel: CounterViewmodel){
 
-    var count= remember {
-        mutableStateOf(0)
-    }
+
     fun incrementCount(){
-        count.value++
+        counterViewmodel.count.value++
     }
     fun decrementCount(){
-        count.value--
+        counterViewmodel.count.value--
     }
 
     Column(modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "count:${count.value?:0}", fontSize = 18.sp)
+        Text(text = "count:${counterViewmodel.count.value?:0}", fontSize = 18.sp)
         Row(horizontalArrangement = Arrangement.SpaceEvenly) {
-            Button(onClick = { incrementCount() }) {
+            Button(onClick = { counterViewmodel.incrementCount() }) {
                 Text(text = "increase")
             }
-            Button(onClick = { decrementCount() }) {
+            Button(onClick = { counterViewmodel.decrementCount() }) {
                 Text(text = "decrease")
             }
         }
